@@ -1,4 +1,5 @@
 using CharacterApp.Data;
+using CharacterApp.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<CharacterDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DemoDB")));
+builder.Services.AddScoped<ISpeicesRepository, SpeicesRepository>();
+builder.Services.AddScoped<ISpeicesService, SpeicesService>();
 
+builder.Services.AddControllers();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,7 +26,9 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.MapGet("/ping", () => "pong!")
+app.MapControllers();
+
+app.MapGet("/", () => "pong!")
 .WithName("Ping Server")
 .WithOpenApi();
 

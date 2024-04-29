@@ -6,9 +6,9 @@ namespace CharacterApp.Services;
 public class SpeicesService : ISpeicesService
 {
     private readonly ISpeicesRepository _repo;
-    private readonly ILogger _logger;
+    private readonly ILogger<SpeicesService> _logger;
 
-    public SpeicesService(ISpeicesRepository repo, ILogger logger) => (_repo, _logger) = (repo, logger);
+    public SpeicesService(ISpeicesRepository repo, ILogger<SpeicesService> logger) => (_repo, _logger) = (repo, logger);
 
     /// <summary>
     /// Creates a new <see cref="Speices"/> object in the database.
@@ -81,7 +81,7 @@ public class SpeicesService : ISpeicesService
     /// <param name="limit">The maximum number of objects to retrieve. Must be greater than or equal to 1.</param>
     /// <returns>A task representing the asynchronous operation. The task result contains a list of <see cref="Speices"/> objects.</returns>
     /// <exception cref="FormatException">Thrown if the offset is less than 0 or if the limit is less than 1.</exception>
-    public async Task<List<Speices>> GetAllSpeicesAsync(int offset = 0, int limit = 100)
+    public async Task<List<Speices>> GetAllSpeicesAsync(int offset, int limit)
     {
         // Check if the offset is less than 0
         if(offset < 0) {
@@ -140,7 +140,7 @@ public class SpeicesService : ISpeicesService
     /// <exception cref="FormatException">Thrown if the speices object does not contain an Id property.</exception>
     /// <exception cref="KeyNotFoundException">Thrown if the speices object with the specified Id does not exist in the database.</exception>
     /// <returns>A task representing the asynchronous operation. The task result contains the updated <see cref="Speices"/> object.</returns>
-    public async Task<Speices> UpdateSpeicesAsync(Speices speices)
+    public async Task<Speices?> UpdateSpeicesAsync(Speices speices)
     {
         // Check if the Id property of the provided speices object is null
         if(speices.Id is null)
@@ -161,6 +161,6 @@ public class SpeicesService : ISpeicesService
         }
 
         // Call the UpdateSpeices method of the repository and return the result
-        return await _repo.UpdateSpeicesAsync(found);
+        return await _repo.UpdateSpeicesAsync(speices);
     }
 }

@@ -6,9 +6,9 @@ namespace CharacterApp.Data;
 public class SpeicesRepository : ISpeicesRepository
 {
     private readonly CharacterDbContext _context;
-    private readonly ILogger _logger;
+    private readonly ILogger<SpeicesRepository> _logger;
 
-    public SpeicesRepository(CharacterDbContext context, ILogger logger) => (_context, _logger) = (context, logger);
+    public SpeicesRepository(CharacterDbContext context, ILogger<SpeicesRepository> logger) => (_context, _logger) = (context, logger);
 
     /// <summary>
     /// Creates a new <see cref="Speices"/> object in the database.
@@ -66,7 +66,7 @@ public class SpeicesRepository : ISpeicesRepository
     /// <param name="offset">The Id of the first object to retrieve. Default is 0.</param>
     /// <param name="limit">The maximum number of objects to retrieve. Default is 100.</param>
     /// <returns>A task representing the asynchronous operation. The task result contains a list of <see cref="Speices"/> objects.</returns>
-    public async Task<List<Speices>> GetAllSpeicesAsync(int offset = 0, int limit = 100)
+    public async Task<List<Speices>> GetAllSpeicesAsync(int offset, int limit)
     {
         _logger.LogDebug($"Retrieving all {nameof(Speices)} objects from the database, starting from Id {offset}, with a maximum of {limit} objects.");
         // Retrieve all Speices objects from the database, starting from the specified offset,
@@ -115,20 +115,26 @@ public class SpeicesRepository : ISpeicesRepository
     /// </summary>
     /// <param name="speices">The <see cref="Speices"/> object to be updated.</param>
     /// <returns>A task representing the asynchronous operation. The task result contains the updated <see cref="Speices"/> object.</returns>
-    public async Task<Speices> UpdateSpeicesAsync(Speices speices)
+    public async Task<Speices?> UpdateSpeicesAsync(Speices speices)
     {
         _logger.LogDebug($"Updating {nameof(Speices)} object with Id {speices.Id} in the database.");
 
         _logger.LogDebug($"Attaching updated {nameof(Speices)} object to the context.");
-        _context.Update(speices);
+        Speices? found = await _context.Speices.FindAsync((int) speices.Id!);
 
-        _logger.LogDebug($"Saving changes to the database.");
-        await _context.SaveChangesAsync();
+        if(found is not null) {
+            found.Name = string.IsNullOrWhiteSpace(speices.Name) ? found.Name : speices.Name;
+            found.Description = string.IsNullOrWhiteSpace(speices.Description) ? found.Description : speices.Description;
+            _logger.LogDebug($"Saving changes to the database.");
+            await _context.SaveChangesAsync();
 
-        _logger.LogDebug($"{nameof(Speices)} object with Id {speices.Id} updated in the database.");
+            _logger.LogDebug($"{nameof(Speices)} object with Id {speices.Id} updated in the database.");
 
-        _logger.LogDebug($"Returning updated {nameof(Speices)} object.");
-        return speices;
+            _logger.LogDebug($"Returning updated {nameof(Speices)} object.");
+            return found;
+        }
+        return null;
+
     }
 
 }
