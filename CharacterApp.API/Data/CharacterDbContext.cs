@@ -42,7 +42,7 @@ public class CharacterDbContext : DbContext
             entity.Property(e => e.Value)
             .HasColumnType("money")
             .IsRequired()
-            .HasDefaultValue(0);
+            .HasDefaultValue(0m);
 
             entity.ToTable(t => t.HasCheckConstraint("CK_Item_Value", "[Value] >= 0"));
 

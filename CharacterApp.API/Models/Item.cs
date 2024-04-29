@@ -7,7 +7,7 @@ public class Item
 
     public string? Description { get; set; }
 
-    public decimal Value { get; set; } = 0.0m;
+    public decimal? Value { get; set; }
     public string? ImageUrl { get; set; }
 
 }
