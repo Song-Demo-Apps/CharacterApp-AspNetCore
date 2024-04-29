@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using CharacterApp.Models;
-using CharacterApp.Data;
 using Microsoft.EntityFrameworkCore;
+using CharacterApp.Services;
 
 
 namespace CharacterApp.Controllers;
@@ -12,28 +12,39 @@ namespace CharacterApp.Controllers;
 public class SpeicesController : ControllerBase
 {
     
-    private readonly CharacterDbContext _context;
+    private readonly ISpeicesService _speicesService;
 
-    public SpeicesController(CharacterDbContext context)
+    public SpeicesController(ISpeicesService speicesService)
     {
-        _context = context;
+        _speicesService = speicesService;
     }
 
-    // GET: api/Speices
+    //This method contains an example of query parameters. The argument offset and limit are being passed in as query params
+    /// <summary>
+    /// Retrieves a collection of all Species objects.
+    /// </summary>
+    /// <param name="offset">The number of objects to skip.</param>
+    /// <param name="limit">The maximum number of objects to return.</param>
+    /// <returns>A collection of Species objects.</returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Speices>>> GetSpeices()
+    public async Task<ActionResult<IEnumerable<Speices>>> GetSpeices(int offset, int limit)
     {
-        var speices = await _context.Speices.ToListAsync();
-        return speices;
+        // Call the GetAllSpeices method of the ISpeicesService interface to retrieve a collection of all Species objects.
+        // The GetAllSpeices method is responsible for retrieving a paginated collection of Species objects from the database.
+        // The offset parameter specifies the number of objects to skip, and the limit parameter specifies the maximum number of objects to return.
+        // The method returns a Task that represents the asynchronous operation.
+        // The task result contains a collection of Species objects.
+        return await _speicesService.GetAllSpeicesAsync(offset, limit);
     }
 
     // GET: api/Speices/5
+    // This method utilizes a route parameter
     [HttpGet("{id}")]
-    public async Task<ActionResult<Speices>> GetSpeices(int id)
+    public async Task<ActionResult<Speices>> GetSpeicesById(int id)
     {
-        var speices = await _context.Speices.FindAsync(id);
+        Speices? speices = await _speicesService.GetSpeicesByIdAsync(id);
 
-        if (speices == null)
+        if (speices is null)
         {
             return NoContent();
         }
@@ -47,63 +58,32 @@ public class SpeicesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Speices>> PostSpeices(Speices speices)
     {
-        _context.Speices.Add(speices);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction("GetSpeices", new { id = speices.Id }, speices);
+        await _speicesService.CreateSpeicesAsync(speices);
+        
+        return CreatedAtAction("GetSpeicesById", new { id = speices.Id }, speices);
     }
 
     // PUT: api/Speices/5
     // To protect from overposting attacks, enable the specific properties you want to bind to, for
     // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutSpeices(int id, Speices speices)
+    [HttpPut]
+    public async Task<Speices> PutSpeices(Speices speices)
     {
-        if (id != speices.Id)
-        {
-            return BadRequest();
-        }
-        
-        _context.Update(speices);
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!SpeicesExists(id))
-            {
-                return NoContent();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
+        return await _speicesService.UpdateSpeicesAsync(speices);
     }
 
     // DELETE: api/Speices/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteSpeices(int id)
     {
-        var speices = await _context.Speices.FindAsync(id);
-        if (speices == null)
+        Speices? result = await _speicesService.DeleteSpeicesAsync(id);
+        
+        if(result is null)
         {
-            return NotFound();
+            return NoContent();
         }
 
-        _context.Speices.Remove(speices);
-        await _context.SaveChangesAsync();
-
-        return Ok();
-    }
-
-    private bool SpeicesExists(int id)
-    {
-        return _context.Speices.Any(e => e.Id == id);
+        return Ok(result);
     }
 
 }
