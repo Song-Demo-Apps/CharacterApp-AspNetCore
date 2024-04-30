@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using CharacterApp.Models;
-using Microsoft.EntityFrameworkCore;
 using CharacterApp.Services;
 
 

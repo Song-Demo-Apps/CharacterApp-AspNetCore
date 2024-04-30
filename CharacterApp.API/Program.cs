@@ -31,7 +31,7 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.MapGet("/", () => "pong!")
-.WithName("Ping Server")
+.WithName("Health Check")
 .WithOpenApi();
 
 app.Run();

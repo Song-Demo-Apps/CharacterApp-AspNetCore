@@ -1,6 +1,5 @@
 using CharacterApp.Data;
 using CharacterApp.Models;
-using System.Data;
 namespace CharacterApp.Services;
 
 public class SpeicesService : ISpeicesService
