@@ -20,7 +20,7 @@ public class CharacterRepository : ICharacterRepository
 
     public async Task<Character?> DeleteCharacter(int id)
     {
-        Character? characterToDelete = _context.Characters.Find(id);
+        Character? characterToDelete = await _context.Characters.FindAsync(id);
         if(characterToDelete is not null)
         {
             _context.Characters.Remove(characterToDelete);
@@ -29,14 +29,26 @@ public class CharacterRepository : ICharacterRepository
         return characterToDelete;
     }
 
-    public Task<Character> GetCharacterById(int id)
+    public async Task<Character?> GetCharacterById(int id)
     {
-        throw new NotImplementedException();
+        return await _context.Characters.Include(c => c.CharacterItems).Include(c => c.CharacterSpeices).FirstOrDefaultAsync(c => c.Id == id);
+    }
+    public async Task<Character?> GetCharacterByName(string name, bool includeItems = false)
+    {
+        if(includeItems) {
+            return await _context.Characters.Include(c => c.CharacterItems).Include(c => c.CharacterSpeices).FirstOrDefaultAsync(c => c.Name == name);
+
+        }
+        return await _context.Characters.Include(c => c.CharacterSpeices).FirstOrDefaultAsync(c => c.Name == name);
+    }
+    public async Task<List<Character>> GetCharactersBySpeices(int speicesId)
+    {
+        return await _context.Characters.Include(c => c.CharacterSpeices).Where(c => c.CharacterSpeices.Id == speicesId).ToListAsync();
     }
 
-    public Task<List<Character>> GetCharacters(int offset, int limit, string search)
+    public async Task<List<Character>> GetCharacters(int offset, int limit, string search)
     {
-        throw new NotImplementedException();
+        return await _context.Characters.Include(c => c.CharacterSpeices).OrderBy(c => c.Id).Where(c => c.Id > offset && c.Contains(search)).Take(limit).ToListAsync();
     }
 
     public Task<Character> UpdateCharacter(CharacterOnlyDTO characterToUpdate)
