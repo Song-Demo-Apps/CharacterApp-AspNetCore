@@ -10,5 +10,5 @@ public interface ICharacterService
     Task<CharacterOnlyDTO> CreateCharacter(CharacterOnlyDTO newCharacter);
     Task<CharacterOnlyDTO> UpdateCharacter(CharacterOnlyDTO characterToUpdate);
     Task<CharacterOnlyDTO> DeleteCharacter(int id);
-    Task<Character> PurchaseItems(OrderDTO items);
+    Task<Character> PurchaseItems(OrderDTO order);
 }

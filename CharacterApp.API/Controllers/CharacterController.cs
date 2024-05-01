@@ -32,24 +32,24 @@ public class CharacterController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<CharacterOnlyDTO> CreateCharacter(CharacterOnlyDTO newCharacter)
+    public async Task<Character> CreateCharacter(CharacterOnlyDTO newCharacter)
     {
         throw new NotImplementedException();
     }
 
     [HttpPut]
-    public async Task<CharacterOnlyDTO> UpdateCharacter(CharacterOnlyDTO characterToUpdate)
+    public async Task<Character> UpdateCharacter(CharacterOnlyDTO characterToUpdate)
     {
         throw new NotImplementedException();
     }
 
     [HttpDelete]
-    public async Task<CharacterOnlyDTO> DeleteCharacter(int id)
+    public async Task<Character> DeleteCharacter(int id)
     {
         throw new NotImplementedException();
     }
 
-    [HttpPost("sale")]
+    [HttpPost("inventory")]
     public Task<Character> PurchaseItems(OrderDTO items)
     {
         throw new NotImplementedException();

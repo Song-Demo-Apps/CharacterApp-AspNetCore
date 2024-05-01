@@ -9,13 +9,12 @@ public class CharacterRepository : ICharacterRepository
     private readonly CharacterDbContext _context;
     public CharacterRepository(CharacterDbContext context) => _context = context;
 
-    public async Task<Character> CreateCharacter(CharacterOnlyDTO newCharacter)
+    public async Task<Character> CreateCharacter(Character newCharacter)
     {
-        Character character = new Character(newCharacter);
-        _context.Characters.Add(character);
+        _context.Characters.Add(newCharacter);
         await _context.SaveChangesAsync();
 
-        return character;
+        return newCharacter;
     }
 
     public async Task<Character?> DeleteCharacter(int id)
@@ -51,13 +50,11 @@ public class CharacterRepository : ICharacterRepository
         return await _context.Characters.Include(c => c.CharacterSpeices).OrderBy(c => c.Id).Where(c => c.Id > offset && c.Contains(search)).Take(limit).ToListAsync();
     }
 
-    public Task<Character> UpdateCharacter(CharacterOnlyDTO characterToUpdate)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<Character> UpdateCharacter(Character characterToUpdate)
+    {   
+        _context.Update(characterToUpdate);
+        await _context.SaveChangesAsync();
 
-    public Task<Character> UpdateCharacterInventory(OrderDTO items)
-    {
-        throw new NotImplementedException();
+        return characterToUpdate;
     }
 }

@@ -15,7 +15,8 @@ builder.Services.AddScoped<ISpeicesRepository, SpeicesRepository>();
 builder.Services.AddScoped<ISpeicesService, SpeicesService>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IItemService, ItemService>();
-
+builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
+builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddControllers();
 var app = builder.Build();
 

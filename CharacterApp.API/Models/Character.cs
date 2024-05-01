@@ -13,9 +13,9 @@ public class Character
     {
         Id = character.Id ?? null;
         Name = character.Name ?? "";
-        DoB = character.DoB;
+        DoB = character.DoB ?? DateOnly.FromDateTime(DateTime.Today);
         Bio = character.Bio;
-        CharacterSpeices = character.CharacterSpeices;
+        CharacterSpeices = character.CharacterSpeices ?? new();
     }
 
     [Range(0, int.MaxValue)]

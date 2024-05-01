@@ -26,7 +26,9 @@ public class CharacterDbContext : DbContext
             .HasColumnType("nvarchar(1000)");
 
             entity.Property(e => e.Money)
-            .HasColumnType("money");
+            .HasColumnType("money")
+            .IsRequired()
+            .HasDefaultValue(0m);
         });
 
         modelBuilder.Entity<CharacterItem>(entity => {
