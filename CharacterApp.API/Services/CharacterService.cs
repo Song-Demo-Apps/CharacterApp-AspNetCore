@@ -2,9 +2,6 @@ using System.Text.Json;
 using CharacterApp.Data;
 using CharacterApp.Models;
 using CharacterApp.Models.DTO;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Microsoft.Identity.Client;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CharacterApp.Services;
 

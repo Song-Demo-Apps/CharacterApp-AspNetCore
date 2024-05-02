@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using CharacterApp.Models.DTO;
-using Microsoft.Identity.Client;
 
 namespace CharacterApp.Models;
 
