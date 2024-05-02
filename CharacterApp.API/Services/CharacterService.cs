@@ -62,19 +62,36 @@ public class CharacterService : ICharacterService
         return await _characterRepo.GetCharactersAsync(offset, limit, search);
     }
 
+    /// <summary>
+    /// Purchase items for a character
+    /// </summary>
+    /// <param name="order">The order containing the items to purchase</param>
+    /// <returns>The updated character</returns>
+    /// <exception cref="ArgumentException">Thrown if there are errors in the order</exception>
     public async Task<Character> PurchaseItemsAsync(OrderDTO order)
     {
+        // Get the character making the order
         Character? orderingChar = await _characterRepo.GetCharacterByIdAsync(order.CharacterId);
-        
+
+        // Check if the character exists
         if(orderingChar is null)
         {
             throw new KeyNotFoundException($"The character with Id {order.CharacterId} was not found");
         }
 
+        // List to store errors in the order
         List<(string, string)> errors = new();
+
+        // The current money the character has
         decimal currentMoney = orderingChar.Money;
+
+        // The total cost of the items to purchase
         decimal totalCost = 0.0m;
+
+        // Dictionary to store the items to purchase and their quantities
         Dictionary<int, (Item, int)> items = new();
+
+        // Loop through each item to purchase, adding them to the dictionary and calculating the total cost
         if(order.ItemsToPurchase is not null)
         {
             foreach(LineItemDTO line in order.ItemsToPurchase)
@@ -91,11 +108,12 @@ public class CharacterService : ICharacterService
                 }
             }
         }
+
+        // Loop through each item to sell, checking if the character owns the item and if they have enough to sell
         if(order.ItemsToSell is not null)
         {
             foreach(LineItemDTO line in order.ItemsToSell)
             {
-                // Check if this character owns the item and they actually have enough to sell
                 CharacterItem? invenItem = orderingChar.CharacterItems.FirstOrDefault(i => i.Item.Id == line.ItemId);
                 if(invenItem is null)
                 {
@@ -112,16 +130,21 @@ public class CharacterService : ICharacterService
                 }
             }
         }
+
+        // Check if the character can afford the transaction
         if(totalCost > currentMoney)
         {
             errors.Add(("cost", $"This character cannot afford this transaction. The total cost is {totalCost}. The character's current balance is {currentMoney}"));
         }
+
+        // If there are errors, throw an exception with the errors
         if(errors.Count > 0)
         {
             throw new ArgumentException(JsonSerializer.Serialize(errors));
         }
         else
         {
+            // Loop through each item the character owns, updating the quantities if the item is in the order
             foreach(CharacterItem ownedItem in orderingChar.CharacterItems)
             {
                 (Item, int) purchaseItem;
@@ -133,6 +156,8 @@ public class CharacterService : ICharacterService
                     items.Remove((int) purchaseItem.Item1.Id!);
                 }
             }
+
+            // Loop through each remaining item in the order, adding them to the character's inventory
             foreach(KeyValuePair<int, (Item, int)> remainingOrderLine in items)
             {
                 orderingChar.CharacterItems.Add(
@@ -143,6 +168,8 @@ public class CharacterService : ICharacterService
                         Quantity = remainingOrderLine.Value.Item2
                     });
             }
+
+            // Update the character's money and return the updated character
             orderingChar.Money -= totalCost;
             return await _characterRepo.UpdateCharacterAsync(orderingChar);
         }
