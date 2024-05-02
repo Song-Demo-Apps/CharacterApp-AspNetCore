@@ -23,7 +23,7 @@ public class CharacterOnlyDTO
     public DateOnly? DoB { get; set; }
     public int? Age { get; private set; }
     public string? Bio { get; set; }
-    public Speices? CharacterSpeices { get; set; } = new();
+    public Speices? CharacterSpeices { get; set; }
 
     private int? CalcuateAge()
     {   if(this.DoB is null) return null;

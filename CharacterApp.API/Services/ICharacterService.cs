@@ -5,10 +5,10 @@ namespace CharacterApp.Services;
 
 public interface ICharacterService
 {
-    Task<List<CharacterOnlyDTO>> GetCharacters(int offset, int limit, string search);
-    Task<Character> GetCharacterById(int id);
-    Task<CharacterOnlyDTO> CreateCharacter(CharacterOnlyDTO newCharacter);
-    Task<CharacterOnlyDTO> UpdateCharacter(CharacterOnlyDTO characterToUpdate);
-    Task<CharacterOnlyDTO> DeleteCharacter(int id);
-    Task<Character> PurchaseItems(OrderDTO order);
+    Task<List<CharacterOnlyDTO>> GetCharactersAsync(int offset, int limit, string search);
+    Task<Character?> GetCharacterByIdAsync(int id);
+    Task<Character> CreateCharacterAsync(CharacterOnlyDTO newCharacter);
+    Task<Character?> UpdateCharacterAsync(CharacterOnlyDTO characterToUpdate);
+    Task<Character?> DeleteCharacterAsync(int id);
+    Task<Character> PurchaseItemsAsync(OrderDTO order);
 }

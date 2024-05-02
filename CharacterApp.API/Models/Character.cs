@@ -28,10 +28,4 @@ public class Character
     public string? Bio { get; set; }
     public Speices CharacterSpeices { get; set; } = new();
     public List<CharacterItem> CharacterItems { get; set; } = new();
-
-    public bool Contains(string searchStr)
-    {
-        string characterString = this.Name + this.Bio;
-        return characterString.Contains(searchStr);
-    }
 }

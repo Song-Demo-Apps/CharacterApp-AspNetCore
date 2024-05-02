@@ -7,9 +7,10 @@ namespace CharacterApp.Data;
 public class CharacterRepository : ICharacterRepository
 {
     private readonly CharacterDbContext _context;
-    public CharacterRepository(CharacterDbContext context) => _context = context;
+    private readonly ILogger<CharacterRepository> _logger;
+    public CharacterRepository(CharacterDbContext context, ILogger<CharacterRepository> logger) => (_context, _logger) = (context, logger);
 
-    public async Task<Character> CreateCharacter(Character newCharacter)
+    public async Task<Character> CreateCharacterAsync(Character newCharacter)
     {
         _context.Characters.Add(newCharacter);
         await _context.SaveChangesAsync();
@@ -17,7 +18,7 @@ public class CharacterRepository : ICharacterRepository
         return newCharacter;
     }
 
-    public async Task<Character?> DeleteCharacter(int id)
+    public async Task<Character?> DeleteCharacterAsync(int id)
     {
         Character? characterToDelete = await _context.Characters.FindAsync(id);
         if(characterToDelete is not null)
@@ -28,29 +29,50 @@ public class CharacterRepository : ICharacterRepository
         return characterToDelete;
     }
 
-    public async Task<Character?> GetCharacterById(int id)
+    public async Task<Character?> GetCharacterByIdAsync(int id)
     {
-        return await _context.Characters.Include(c => c.CharacterItems).Include(c => c.CharacterSpeices).FirstOrDefaultAsync(c => c.Id == id);
+        return await _context.Characters
+        .Include(c => c.CharacterItems)
+        .ThenInclude(ci => ci.Item)
+        .Include(c => c.CharacterSpeices)
+        .FirstOrDefaultAsync(c => c.Id == id);
     }
-    public async Task<Character?> GetCharacterByName(string name, bool includeItems = false)
+    public async Task<Character?> GetCharacterByNameAsync(string name, bool includeItems = false)
     {
         if(includeItems) {
-            return await _context.Characters.Include(c => c.CharacterItems).Include(c => c.CharacterSpeices).FirstOrDefaultAsync(c => c.Name == name);
+            return await _context.Characters
+            .Include(c => c.CharacterItems)
+            .ThenInclude(ci => ci.Item)
+            .Include(c => c.CharacterSpeices)
+            .FirstOrDefaultAsync(c => c.Name == name);
 
         }
-        return await _context.Characters.Include(c => c.CharacterSpeices).FirstOrDefaultAsync(c => c.Name == name);
+        return await _context.Characters
+        .Include(c => c.CharacterSpeices)
+        .FirstOrDefaultAsync(c => c.Name == name);
     }
-    public async Task<List<Character>> GetCharactersBySpeices(int speicesId)
+    public async Task<List<CharacterOnlyDTO>> GetCharactersBySpeicesAsync(int speicesId)
     {
-        return await _context.Characters.Include(c => c.CharacterSpeices).Where(c => c.CharacterSpeices.Id == speicesId).ToListAsync();
+        return await _context.Characters
+        .Include(c => c.CharacterSpeices)
+        .Where(c => c.CharacterSpeices.Id == speicesId)
+        .Select(c => new CharacterOnlyDTO(c))
+        .ToListAsync();
     }
 
-    public async Task<List<Character>> GetCharacters(int offset, int limit, string search)
+    public async Task<List<CharacterOnlyDTO>> GetCharactersAsync(int offset, int limit, string search)
     {
-        return await _context.Characters.Include(c => c.CharacterSpeices).OrderBy(c => c.Id).Where(c => c.Id > offset && c.Contains(search)).Take(limit).ToListAsync();
+        return await _context.Characters
+        .Include(c => c.CharacterSpeices)
+        .Where(c => c.Id > offset)
+        .Where(c => (c.Name + c.Bio).Contains(search))
+        .OrderBy(c => c.Id)
+        .Take(limit)
+        .Select(c => new CharacterOnlyDTO(c))
+        .ToListAsync();
     }
 
-    public async Task<Character> UpdateCharacter(Character characterToUpdate)
+    public async Task<Character> UpdateCharacterAsync(Character characterToUpdate)
     {   
         _context.Update(characterToUpdate);
         await _context.SaveChangesAsync();

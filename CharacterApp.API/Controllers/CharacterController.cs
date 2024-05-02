@@ -22,36 +22,93 @@ public class CharacterController : ControllerBase
     [HttpGet]
     public async Task<List<CharacterOnlyDTO>> GetCharacters(int offset = 0, int limit = 100, string search = "")
     {
-        throw new NotImplementedException();
+        return await _characterService.GetCharactersAsync(offset, limit, search);
     }
 
     [HttpGet("{id}")]
-    public async Task<Character> GetCharacterById(int id)
+    public async Task<IActionResult> GetCharacterById(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            Character? character = await _characterService.GetCharacterByIdAsync(id);
+            if(character is not null)
+            {
+                return Ok(character);
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
+        catch(ArgumentOutOfRangeException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpPost]
     public async Task<Character> CreateCharacter(CharacterOnlyDTO newCharacter)
     {
-        throw new NotImplementedException();
+        return await _characterService.CreateCharacterAsync(newCharacter);
     }
 
     [HttpPut]
-    public async Task<Character> UpdateCharacter(CharacterOnlyDTO characterToUpdate)
+    public async Task<IActionResult> UpdateCharacter(CharacterOnlyDTO characterToUpdate)
     {
-        throw new NotImplementedException();
+        try
+        {
+            Character? character = await _characterService.UpdateCharacterAsync(characterToUpdate);
+            if(character is not null)
+            {
+                return Ok(character);
+            }
+            else
+            {
+                return NoContent();
+            }
+            
+        }
+        catch(ArgumentNullException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpDelete]
-    public async Task<Character> DeleteCharacter(int id)
+    public async Task<IActionResult> DeleteCharacter(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            Character? character = await _characterService.DeleteCharacterAsync(id);
+            if(character is not null)
+            {
+                return Ok(character);
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
+        catch(ArgumentOutOfRangeException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpPost("inventory")]
-    public Task<Character> PurchaseItems(OrderDTO items)
+    public async Task<IActionResult> PurchaseItems(OrderDTO order)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return Ok(await _characterService.PurchaseItemsAsync(order));
+        }
+        catch(KeyNotFoundException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch(ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }
