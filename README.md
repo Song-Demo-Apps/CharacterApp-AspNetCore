@@ -1,4 +1,4 @@
-# CharacterApp-BackEnd
+# CharacterApp-AspNetCore
 ## Overview
 Character App is a demo application to demonstrate various features of ASP.NET Core interacting with SQL Database via Entity Framework Core in a way that is presented in Revature training.
 
