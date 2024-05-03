@@ -12,6 +12,7 @@ public class CharacterOnlyDTO
         Id = character.Id ?? null;
         Name = character.Name ?? "";
         DoB = character.DoB;
+        Money = character.Money;
         Bio = character.Bio;
         CharacterSpeices = character.CharacterSpeices;
         Age = CalcuateAge();

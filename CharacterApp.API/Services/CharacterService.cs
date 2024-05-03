@@ -21,15 +21,22 @@ public class CharacterService : ICharacterService
         newChar.Id = null;
         if(newCharacter.CharacterSpeices is not null) 
         {
-            // Use the mapping constructor I created for this model class
-            Speices? speices = await _speicesRepo.GetSpeicesByIdAsync((int) newCharacter.CharacterSpeices.Id!);
-            if(speices is null)
+            Speices? newSpeices;
+            if(newCharacter.CharacterSpeices.Id is null) {
+                newSpeices = await _speicesRepo.CreateSpeicesAsync(newCharacter.CharacterSpeices);
+            }
+            else {
+                // Use the mapping constructor I created for this model class
+                newSpeices = await _speicesRepo.GetSpeicesByIdAsync((int)newCharacter.CharacterSpeices.Id);
+
+            }
+            if(newSpeices is null)
             {
                 throw new ArgumentException($"Speices with Id {newCharacter.CharacterSpeices.Id} was not found");
             }
             else
             {
-                newChar.CharacterSpeices = speices;
+                newChar.CharacterSpeices = newSpeices;
             }
         }
 

@@ -12,6 +12,7 @@ public class Character
     {
         Id = character.Id ?? null;
         Name = character.Name ?? "";
+        Money = character.Money ?? 0.0m;
         DoB = character.DoB ?? DateOnly.FromDateTime(DateTime.Today);
         Bio = character.Bio;
         CharacterSpeices = character.CharacterSpeices ?? new();
