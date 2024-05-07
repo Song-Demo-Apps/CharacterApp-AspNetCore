@@ -37,7 +37,7 @@ namespace CharacterApp.API.Migrations
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int>("CharacterSpeicesId")
+                    b.Property<int>("CharacterSpeciesId")
                         .HasColumnType("int");
 
                     b.Property<DateOnly>("DoB")
@@ -52,7 +52,7 @@ namespace CharacterApp.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CharacterSpeicesId");
+                    b.HasIndex("CharacterSpeciesId");
 
                     b.ToTable("Characters", "CharacterApp");
                 });
@@ -120,7 +120,7 @@ namespace CharacterApp.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CharacterApp.Models.Speices", b =>
+            modelBuilder.Entity("CharacterApp.Models.Species", b =>
                 {
                     b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
@@ -137,18 +137,18 @@ namespace CharacterApp.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Speices", "CharacterApp");
+                    b.ToTable("Species", "CharacterApp");
                 });
 
             modelBuilder.Entity("CharacterApp.Models.Character", b =>
                 {
-                    b.HasOne("CharacterApp.Models.Speices", "CharacterSpeices")
+                    b.HasOne("CharacterApp.Models.Species", "CharacterSpecies")
                         .WithMany()
-                        .HasForeignKey("CharacterSpeicesId")
+                        .HasForeignKey("CharacterSpeciesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CharacterSpeices");
+                    b.Navigation("CharacterSpecies");
                 });
 
             modelBuilder.Entity("CharacterApp.Models.CharacterItem", b =>

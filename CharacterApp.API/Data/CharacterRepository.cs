@@ -34,7 +34,7 @@ public class CharacterRepository : ICharacterRepository
         return await _context.Characters
         .Include(c => c.CharacterItems)
         .ThenInclude(ci => ci.Item)
-        .Include(c => c.CharacterSpeices)
+        .Include(c => c.CharacterSpecies)
         .FirstOrDefaultAsync(c => c.Id == id);
     }
     public async Task<Character?> GetCharacterByNameAsync(string name, bool includeItems = false)
@@ -43,19 +43,19 @@ public class CharacterRepository : ICharacterRepository
             return await _context.Characters
             .Include(c => c.CharacterItems)
             .ThenInclude(ci => ci.Item)
-            .Include(c => c.CharacterSpeices)
+            .Include(c => c.CharacterSpecies)
             .FirstOrDefaultAsync(c => c.Name == name);
 
         }
         return await _context.Characters
-        .Include(c => c.CharacterSpeices)
+        .Include(c => c.CharacterSpecies)
         .FirstOrDefaultAsync(c => c.Name == name);
     }
-    public async Task<List<CharacterOnlyDTO>> GetCharactersBySpeicesAsync(int speicesId)
+    public async Task<List<CharacterOnlyDTO>> GetCharactersBySpeciesAsync(int speciesId)
     {
         return await _context.Characters
-        .Include(c => c.CharacterSpeices)
-        .Where(c => c.CharacterSpeices.Id == speicesId)
+        .Include(c => c.CharacterSpecies)
+        .Where(c => c.CharacterSpecies.Id == speciesId)
         .Select(c => new CharacterOnlyDTO(c))
         .ToListAsync();
     }
@@ -63,7 +63,7 @@ public class CharacterRepository : ICharacterRepository
     public async Task<List<CharacterOnlyDTO>> GetCharactersAsync(int offset, int limit, string search)
     {
         return await _context.Characters
-        .Include(c => c.CharacterSpeices)
+        .Include(c => c.CharacterSpecies)
         .Where(c => c.Id > offset)
         .Where(c => (c.Name + c.Bio).Contains(search))
         .OrderBy(c => c.Id)

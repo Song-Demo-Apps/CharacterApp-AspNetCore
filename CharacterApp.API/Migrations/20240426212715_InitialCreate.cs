@@ -33,7 +33,7 @@ namespace CharacterApp.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Speices",
+                name: "Species",
                 schema: "CharacterApp",
                 columns: table => new
                 {
@@ -44,7 +44,7 @@ namespace CharacterApp.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Speices", x => x.Id);
+                    table.PrimaryKey("PK_Species", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -56,16 +56,16 @@ namespace CharacterApp.API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     DoB = table.Column<DateOnly>(type: "date", nullable: false),
-                    CharacterSpeicesId = table.Column<int>(type: "int", nullable: false)
+                    CharacterSpeciesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Characters", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Characters_Speices_CharacterSpeicesId",
-                        column: x => x.CharacterSpeicesId,
+                        name: "FK_Characters_Species_CharacterSpeciesId",
+                        column: x => x.CharacterSpeciesId,
                         principalSchema: "CharacterApp",
-                        principalTable: "Speices",
+                        principalTable: "Species",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -114,10 +114,10 @@ namespace CharacterApp.API.Migrations
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Characters_CharacterSpeicesId",
+                name: "IX_Characters_CharacterSpeciesId",
                 schema: "CharacterApp",
                 table: "Characters",
-                column: "CharacterSpeicesId");
+                column: "CharacterSpeciesId");
         }
 
         /// <inheritdoc />
@@ -136,7 +136,7 @@ namespace CharacterApp.API.Migrations
                 schema: "CharacterApp");
 
             migrationBuilder.DropTable(
-                name: "Speices",
+                name: "Species",
                 schema: "CharacterApp");
         }
     }

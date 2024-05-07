@@ -8,35 +8,35 @@ namespace CharacterApp.Services;
 public class CharacterService : ICharacterService
 {
     private readonly ICharacterRepository _characterRepo;
-    private readonly ISpeicesRepository _speicesRepo;
+    private readonly ISpeciesRepository _speciesRepo;
     private readonly IItemRepository _itemRepo;
     private readonly ILogger<CharacterService> _logger;
 
-    public CharacterService(ICharacterRepository characterRepo, ILogger<CharacterService> logger, ISpeicesRepository speicesRepo, IItemRepository itemRepo) => (_characterRepo, _logger, _speicesRepo, _itemRepo) = (characterRepo, logger, speicesRepo, itemRepo);
+    public CharacterService(ICharacterRepository characterRepo, ILogger<CharacterService> logger, ISpeciesRepository speciesRepo, IItemRepository itemRepo) => (_characterRepo, _logger, _speciesRepo, _itemRepo) = (characterRepo, logger, speciesRepo, itemRepo);
 
     public async Task<Character> CreateCharacterAsync(CharacterOnlyDTO newCharacter)
     {
         Character newChar = new Character(newCharacter);
         // Make sure the new character does not have id
         newChar.Id = null;
-        if(newCharacter.CharacterSpeices is not null) 
+        if(newCharacter.CharacterSpecies is not null) 
         {
-            Speices? newSpeices;
-            if(newCharacter.CharacterSpeices.Id is null) {
-                newSpeices = await _speicesRepo.CreateSpeicesAsync(newCharacter.CharacterSpeices);
+            Species? newSpecies;
+            if(newCharacter.CharacterSpecies.Id is null) {
+                newSpecies = await _speciesRepo.CreateSpeciesAsync(newCharacter.CharacterSpecies);
             }
             else {
                 // Use the mapping constructor I created for this model class
-                newSpeices = await _speicesRepo.GetSpeicesByIdAsync((int)newCharacter.CharacterSpeices.Id);
+                newSpecies = await _speciesRepo.GetSpeciesByIdAsync((int)newCharacter.CharacterSpecies.Id);
 
             }
-            if(newSpeices is null)
+            if(newSpecies is null)
             {
-                throw new ArgumentException($"Speices with Id {newCharacter.CharacterSpeices.Id} was not found");
+                throw new ArgumentException($"Species with Id {newCharacter.CharacterSpecies.Id} was not found");
             }
             else
             {
-                newChar.CharacterSpeices = newSpeices;
+                newChar.CharacterSpecies = newSpecies;
             }
         }
 
@@ -191,17 +191,17 @@ public class CharacterService : ICharacterService
         character.Money = charDTO.Money ?? character.Money;
         character.DoB = charDTO.DoB ?? character.DoB;
         character.Bio = string.IsNullOrWhiteSpace(charDTO.Bio) ? character.Bio : charDTO.Bio;
-        if(charDTO.CharacterSpeices is not null)
+        if(charDTO.CharacterSpecies is not null)
         {
-            if(charDTO.CharacterSpeices.Id is null)
+            if(charDTO.CharacterSpecies.Id is null)
             {
-                throw new ArgumentNullException("Character Speices Id cannot be null");
+                throw new ArgumentNullException("Character Species Id cannot be null");
             }
-            Speices? sp = await _speicesRepo.GetSpeicesByIdAsync((int) charDTO.CharacterSpeices.Id);
+            Species? sp = await _speciesRepo.GetSpeciesByIdAsync((int) charDTO.CharacterSpecies.Id);
 
             if(sp is not null) 
             {
-                character.CharacterSpeices = sp;
+                character.CharacterSpecies = sp;
             }
         }
         return await _characterRepo.UpdateCharacterAsync(character);

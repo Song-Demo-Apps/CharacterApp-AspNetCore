@@ -15,7 +15,7 @@ public class Character
         Money = character.Money ?? 0.0m;
         DoB = character.DoB ?? DateOnly.FromDateTime(DateTime.Today);
         Bio = character.Bio;
-        CharacterSpeices = character.CharacterSpeices ?? new();
+        CharacterSpecies = character.CharacterSpecies ?? new();
     }
 
     [Range(0, int.MaxValue)]
@@ -26,6 +26,6 @@ public class Character
     public decimal Money { get; set; } = 0.0m;
     public DateOnly DoB { get; set; }
     public string? Bio { get; set; }
-    public Speices CharacterSpeices { get; set; } = new();
+    public Species CharacterSpecies { get; set; } = new();
     public List<CharacterItem> CharacterItems { get; set; } = new();
 }

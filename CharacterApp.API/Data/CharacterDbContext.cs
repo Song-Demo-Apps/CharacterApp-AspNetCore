@@ -11,7 +11,7 @@ public class CharacterDbContext : DbContext
     public DbSet<Character> Characters { get; set; }
     public DbSet<CharacterItem> CharacterItems { get; set; }
     public DbSet<Item> Items { get; set; }
-    public DbSet<Speices> Speices { get; set; }
+    public DbSet<Species> Species { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -56,7 +56,7 @@ public class CharacterDbContext : DbContext
 
         });
 
-        modelBuilder.Entity<Speices>(entity => {
+        modelBuilder.Entity<Species>(entity => {
             entity.Property(e => e.Name)
             .HasColumnType("nvarchar(50)")
             .IsRequired();

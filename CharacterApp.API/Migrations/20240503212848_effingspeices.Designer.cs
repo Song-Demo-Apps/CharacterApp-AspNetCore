@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CharacterApp.API.Migrations
 {
     [DbContext(typeof(CharacterDbContext))]
-    [Migration("20240426212715_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240503212848_effingspeices")]
+    partial class effingspeices
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,11 +34,19 @@ namespace CharacterApp.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<int>("CharacterSpeciesId")
                         .HasColumnType("int");
 
                     b.Property<DateOnly>("DoB")
                         .HasColumnType("date");
+
+                    b.Property<decimal>("Money")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("money")
+                        .HasDefaultValue(0m);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -100,7 +108,8 @@ namespace CharacterApp.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<decimal>("Value")
+                    b.Property<decimal?>("Value")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("money")
                         .HasDefaultValue(0m);
@@ -146,7 +155,7 @@ namespace CharacterApp.API.Migrations
 
             modelBuilder.Entity("CharacterApp.Models.CharacterItem", b =>
                 {
-                    b.HasOne("CharacterApp.Models.Character", "Character")
+                    b.HasOne("CharacterApp.Models.Character", null)
                         .WithMany("CharacterItems")
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -157,8 +166,6 @@ namespace CharacterApp.API.Migrations
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Character");
 
                     b.Navigation("Item");
                 });

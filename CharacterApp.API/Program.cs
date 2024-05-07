@@ -22,8 +22,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<CharacterDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DemoDB")));
-builder.Services.AddScoped<ISpeicesRepository, SpeicesRepository>();
-builder.Services.AddScoped<ISpeicesService, SpeicesService>();
+builder.Services.AddScoped<ISpeciesRepository, SpeciesRepository>();
+builder.Services.AddScoped<ISpeciesService, SpeciesService>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();

@@ -14,7 +14,7 @@ public class CharacterOnlyDTO
         DoB = character.DoB;
         Money = character.Money;
         Bio = character.Bio;
-        CharacterSpeices = character.CharacterSpeices;
+        CharacterSpecies = character.CharacterSpecies;
         Age = CalcuateAge();
     }
 
@@ -24,7 +24,7 @@ public class CharacterOnlyDTO
     public DateOnly? DoB { get; set; }
     public int? Age { get; private set; }
     public string? Bio { get; set; }
-    public Speices? CharacterSpeices { get; set; }
+    public Species? CharacterSpecies { get; set; }
 
     private int? CalcuateAge()
     {   if(this.DoB is null) return null;

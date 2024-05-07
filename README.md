@@ -6,7 +6,7 @@ Character App is an application that allows users to create and manage different
 
 ## Currently Working Features
 - CRUD Characters
-- CRUD Speices
+- CRUD Species
 - CRUD Items
 - Manage Character's Items
 - Various input validation
